@@ -1,0 +1,15 @@
+# Desktop save files are bytes: CRLF text followed by an embedded preview
+# bitmap. Under core.autocrlf=true git would store them CR-stripped, and the
+# file committed would no longer be the file the desktop wrote.
+*.C01 binary
+*.C02 binary
+*.C04 binary
+*.C11 binary
+*.C12 binary
+*.C13 binary
+*.C14 binary
+*.C15 binary
+*.C16 binary
+*.C21 binary
+*.C22 binary
+*.C23 binary

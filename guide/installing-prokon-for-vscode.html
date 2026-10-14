@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installing PROKON for VS Code</title>
+<style>
+  body { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.6; color: #1d2733; background: #f6f7f9; margin: 0; }
+  main { max-width: 52rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; background: #fff; }
+  h1 { color: #0b3d6e; border-bottom: 3px solid #0b3d6e; padding-bottom: .3rem; }
+  h2 { color: #0b3d6e; margin-top: 2.2rem; }
+  h3 { color: #234e78; }
+  code, pre { font-family: Consolas, "Cascadia Mono", monospace; background: #eef1f5; border-radius: 4px; }
+  code { padding: .1rem .3rem; }
+  pre { padding: .8rem 1rem; overflow-x: auto; }
+  .note { border-left: 4px solid #2a7ab8; background: #eef6fc; padding: .6rem 1rem; margin: 1rem 0; }
+  .warn { border-left: 4px solid #c77c00; background: #fff6e6; padding: .6rem 1rem; margin: 1rem 0; }
+  ol.steps > li { margin-bottom: 1rem; }
+  nav.guides { font-size: .9rem; background: #eef1f5; padding: .5rem 1rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+<nav class="guides">Guides:
+  <a href="installing-prokon-for-spyder.html">Spyder</a> ·
+  <strong>VS Code</strong> ·
+  <a href="installing-prokon-automation-host.html">Automation host</a> ·
+  <a href="writing-prokon-python-scripts.html">Writing scripts</a>
+</nav>
+
+<h1>Installing PROKON for VS Code</h1>
+
+<p><strong>VS Code is "bring your own Python".</strong> Unlike Spyder, VS Code does not come
+with Python. You install Python yourself, add the libraries you want, and then PROKON setup
+installs the <code>prokon.v5</code> package into the Python you choose.</p>
+
+<p>This takes a few more steps than <a href="installing-prokon-for-spyder.html">Spyder</a>,
+and gives you full control over your Python. If you just want something that works
+straight away, use Spyder instead.</p>
+
+<p>There are four parts: <a href="#part1">VS Code</a>, <a href="#part2">Python</a>,
+<a href="#part3">your project's environment and libraries</a>, and
+<a href="#part4">PROKON</a>.</p>
+
+<h2 id="part1">Part 1: Install VS Code and its Python extension</h2>
+<ol class="steps">
+  <li>Download and install VS Code from
+    <a href="https://code.visualstudio.com/">code.visualstudio.com</a>.</li>
+  <li>Open VS Code, go to the <strong>Extensions</strong> view (Ctrl+Shift+X), search for
+    <strong>Python</strong> (published by Microsoft) and install it. This one extension also
+    brings in the Python language support (Pylance), the debugger and the environment
+    manager.</li>
+</ol>
+
+<h2 id="part2">Part 2: Install Python from python.org</h2>
+<ol class="steps">
+  <li>Go to <a href="https://www.python.org/downloads/">python.org/downloads</a> and download
+    the current Python release for Windows (64-bit). PROKON needs Python 3.8 or newer; any
+    current release is fine.</li>
+  <li>Run the downloaded installer and follow its steps.</li>
+  <li><strong>Check it worked.</strong> Open a <em>new</em> terminal (in VS Code:
+    <strong>Terminal → New Terminal</strong>) and type:
+    <pre>python --version</pre>
+    You should see something like <code>Python 3.14.0</code>.
+    <div class="warn"><strong>If the Microsoft Store opens instead</strong>, Python is not
+    installed yet (or the terminal was opened before you installed it). Windows has a
+    built-in <code>python</code> shortcut that sends you to the Store when no Python is
+    present. Close the Store, open a new terminal, and try again after finishing the
+    python.org install.</div>
+  </li>
+</ol>
+
+<h2 id="part3">Part 3: Create your project's environment and add libraries</h2>
+<p>A <strong>virtual environment</strong> (a "venv") is a private copy of Python for one
+project. Libraries you add go into that project only. This is the usual way to work in
+VS Code, and it is the recommended place to install PROKON.</p>
+
+<ol class="steps">
+  <li>Make a folder for your scripts and open it in VS Code
+    (<strong>File → Open Folder…</strong>).</li>
+  <li>Create the environment. Either press <strong>Ctrl+Shift+P</strong> and run
+    <strong>Python: Create Environment</strong> (choose <em>Venv</em>), or type this in the
+    terminal:
+    <pre>python -m venv .venv</pre>
+    This creates a <code>.venv</code> folder inside your project.</li>
+  <li>Tell VS Code to use it: press <strong>Ctrl+Shift+P</strong>, run
+    <strong>Python: Select Interpreter</strong>, and pick the one inside <code>.venv</code>.</li>
+  <li><strong>Add the libraries.</strong> PROKON itself needs nothing beyond plain Python.
+    The examples, though, use four popular libraries for tables, spreadsheets and charts.
+    Install them into your environment with:
+    <pre>.venv\Scripts\python.exe -m pip install numpy pandas matplotlib openpyxl</pre>
+    <table style="border-collapse:collapse;width:100%">
+      <tr><td style="border:1px solid #d5dbe3;padding:.3rem .6rem"><code>numpy</code></td><td style="border:1px solid #d5dbe3;padding:.3rem .6rem">fast arrays and maths</td></tr>
+      <tr><td style="border:1px solid #d5dbe3;padding:.3rem .6rem"><code>pandas</code></td><td style="border:1px solid #d5dbe3;padding:.3rem .6rem">tables of results</td></tr>
+      <tr><td style="border:1px solid #d5dbe3;padding:.3rem .6rem"><code>matplotlib</code></td><td style="border:1px solid #d5dbe3;padding:.3rem .6rem">charts</td></tr>
+      <tr><td style="border:1px solid #d5dbe3;padding:.3rem .6rem"><code>openpyxl</code></td><td style="border:1px solid #d5dbe3;padding:.3rem .6rem">reading and writing Excel files</td></tr>
+    </table>
+    <p>The same command adds any other library later: <code>…python.exe -m pip install
+    &lt;name&gt;</code>. These libraries are your choice. PROKON setup never requires them,
+    and installs fine without them.</p>
+  </li>
+</ol>
+
+<div class="note">You do not have to use a venv. You can install PROKON straight into the
+Python you installed in Part 2. Just remember that PROKON (like any library) is available
+only in the Python it was installed into.</div>
+
+<h2 id="part4">Part 4: Install PROKON</h2>
+<ol class="steps">
+  <li><strong>Find the path to your environment's Python.</strong> In the VS Code terminal,
+    with your environment selected, run:
+    <pre>python -c "import sys; print(sys.executable)"</pre>
+    For a project venv it ends in <code>.venv\Scripts\python.exe</code>. Copy it.</li>
+  <li><strong>Run <code>Install-Prokon-5-for-VSCode.exe</code>.</strong> No administrator
+    rights are needed.</li>
+  <li>On the page <strong>"Which Python should PROKON be installed into?"</strong>, setup
+    lists the Pythons it found on your PC. Nothing is pre-selected, on purpose: pick
+    carefully.
+    <ul>
+      <li>If your Python is in the list, select it.</li>
+      <li>For a project venv (which a search of the PC cannot find), choose the last entry,
+        <strong>"Choose a different interpreter, or a .venv in your project folder…"</strong>,
+        and paste the path you copied.</li>
+    </ul>
+  </li>
+  <li>Setup checks that Python before installing. If it cannot use it, it says why (for
+    example, the file does not exist, the Python is older than 3.8, or it cannot write to
+    that Python's library folder). Choose another, then continue.</li>
+  <li>Finish the wizard.</li>
+</ol>
+
+<div class="warn"><strong>One Python per PC.</strong> PROKON for VS Code lives in one Python
+at a time. If you later install it into a different Python, it is removed from the first
+one. If <code>import prokon.v5</code> stops working in an old project, that is why: re-run
+setup and choose that project's Python.</div>
+
+<h2>Check that it works</h2>
+<p>Create a file called <code>check_prokon.py</code> in your project folder:</p>
+<pre>import prokon.v5
+
+answer = prokon.v5.beam_section.analyse(
+    design_code="BS8110 - 1997",
+    m=200, v=100,
+    bw=300, h=500,
+    dc_t=40, dc_b=40, dc_s=40,
+    fcu=30, fy=450, fyv=450,
+)
+
+print(answer["result"]["mu"])</pre>
+<p>Run it with the ▶ button at the top right of the editor. It should print
+<code>295.18197048179997</code>. If you see <code>No module named 'prokon'</code>, VS Code
+is using a different Python from the one you chose in setup: run <strong>Python: Select
+Interpreter</strong> and pick that one.</p>
+
+<h2>Installing for IT departments</h2>
+<p>Setup can run without any windows, naming the Python on the command line:</p>
+<pre>Install-Prokon-5-for-VSCode.exe /VERYSILENT /PYTHON="C:\path\to\python.exe"</pre>
+
+<h2>Next steps</h2>
+<ul>
+  <li><a href="writing-prokon-python-scripts.html">Writing PROKON-Python scripts</a>.</li>
+  <li>Copy the <a href="../examples/">examples folder</a> into your project and run any
+    script. Start with <code>examples/quickstarts/</code>.</li>
+</ul>
+
+<h2>Removing it</h2>
+<p>Use <strong>Settings → Apps → Installed apps</strong> and uninstall <em>PROKON 5 for
+VS Code</em>. Your Python and your other libraries are left alone.</p>
+</main>
+</body>
+</html>

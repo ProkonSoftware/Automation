@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installing the PROKON Automation Host</title>
+<style>
+  body { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.6; color: #1d2733; background: #f6f7f9; margin: 0; }
+  main { max-width: 52rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; background: #fff; }
+  h1 { color: #0b3d6e; border-bottom: 3px solid #0b3d6e; padding-bottom: .3rem; }
+  h2 { color: #0b3d6e; margin-top: 2.2rem; }
+  h3 { color: #234e78; }
+  code, pre { font-family: Consolas, "Cascadia Mono", monospace; background: #eef1f5; border-radius: 4px; }
+  code { padding: .1rem .3rem; }
+  pre { padding: .8rem 1rem; overflow-x: auto; }
+  .note { border-left: 4px solid #2a7ab8; background: #eef6fc; padding: .6rem 1rem; margin: 1rem 0; }
+  .warn { border-left: 4px solid #c77c00; background: #fff6e6; padding: .6rem 1rem; margin: 1rem 0; }
+  ol.steps > li { margin-bottom: 1rem; }
+  nav.guides { font-size: .9rem; background: #eef1f5; padding: .5rem 1rem; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; } td, th { border: 1px solid #d5dbe3; padding: .4rem .6rem; text-align: left; vertical-align: top; }
+</style>
+</head>
+<body>
+<main>
+<nav class="guides">Guides:
+  <a href="installing-prokon-for-spyder.html">Spyder</a> ·
+  <a href="installing-prokon-for-vscode.html">VS Code</a> ·
+  <strong>Automation host</strong> ·
+  <a href="writing-prokon-python-scripts.html">Writing scripts</a>
+</nav>
+
+<h1>Installing the PROKON Automation Host</h1>
+
+<p>The Automation Host is one program, <code>prokon-automation.exe</code>, that runs all
+the PROKON design engines. It <strong>works out of the box</strong>: it brings its own
+Python, already loaded with numpy, pandas, matplotlib and openpyxl.</p>
+
+<p>Its main purpose is to let an <strong>AI assistant</strong> do PROKON design work for you.
+You describe the job in plain English ("size a pad footing for these column loads and show
+me the options as a chart") and the assistant calls the PROKON engines, or writes and runs
+a Python script that does. For that you need an <em>agentic</em> AI tool: one that can use
+tools and run programs on your PC, not just chat.</p>
+
+<h2>Step 1: Get an AI assistant (recommended)</h2>
+<p>Install one of these <strong>before</strong> you install the host. Setup then connects
+the host to it for you.</p>
+<table>
+  <tr><th>Tool</th><th>Cost</th><th>Where to get it</th></tr>
+  <tr><td><strong>Claude Code</strong> (Anthropic)</td><td>Paid: needs a Claude
+    subscription or an Anthropic API account.</td><td><a
+    href="https://claude.com/claude-code">claude.com/claude-code</a></td></tr>
+  <tr><td><strong>OpenCode</strong></td><td>Free and open source. It can use free AI models,
+    or connect to paid ones.</td><td><a href="https://opencode.ai/">opencode.ai</a></td></tr>
+</table>
+<p>Either works. Follow the tool's own install instructions, and start it once to sign in
+or set it up.</p>
+<div class="note">You can also use the host with no AI tool at all, to run your own Python
+scripts. See <a href="#run">Running a script yourself</a>.</div>
+
+<h2>Step 2: Install the host</h2>
+<ol class="steps">
+  <li><strong>Run <code>Install-Prokon-Automation-Host.exe</code>.</strong> No administrator
+    rights are needed.</li>
+  <li><strong>Choose the folder</strong>, or accept the default:
+    <code>C:\Users\&lt;you&gt;\.prokon\automation-host</code>.</li>
+  <li><strong>Finish the wizard.</strong> Setup installs the host and its Python, then
+    connects the host to every AI tool it finds: Claude Code, OpenCode, or both. The finish
+    page tells you what happened for each one.</li>
+  <li><strong>Restart your AI tool</strong> (and any open terminal) so it picks up the new
+    settings.</li>
+</ol>
+<div class="warn">Installing or updating the host closes any copy of it that is running.
+An AI tool that was using it loses its PROKON tools until you restart that tool.</div>
+
+<h3>Installed your AI tool afterwards? Connect it later</h3>
+<p>Run this in PowerShell (change the folder if you installed somewhere else):</p>
+<pre>&amp; "$env:USERPROFILE\.prokon\automation-host\prokon-mcp.cmd" register</pre>
+<p>Two more commands do the opposite and report the current state:</p>
+<pre>&amp; "$env:USERPROFILE\.prokon\automation-host\prokon-mcp.cmd" unregister
+&amp; "$env:USERPROFILE\.prokon\automation-host\prokon-mcp.cmd" status</pre>
+<p><code>status</code> lists each AI tool and whether PROKON is registered with it.</p>
+<p>Using a different AI tool? Any tool that supports MCP (the standard way to give AI
+assistants tools) can use the host. Point it at this command:</p>
+<pre>C:\Users\&lt;you&gt;\.prokon\automation-host\prokon-automation.exe mcp-serve</pre>
+
+<h2>Step 3: Check that it works</h2>
+<p>Open your AI tool and ask:</p>
+<pre>Using PROKON, what is the moment capacity of a 300 x 500 mm beam section to BS8110 - 1997,
+with fcu 30, fy 450, fyv 450, 40 mm cover all round, M = 200 kNm and V = 100 kN?</pre>
+<p>It should report about <strong>295.2 kNm</strong>. If the tool says it has no PROKON
+tools, run <code>prokon-mcp.cmd status</code> (above) and restart the tool.</p>
+
+<h2 id="run">Running a script yourself</h2>
+<p>The host can run any PROKON-Python script directly, with no AI tool involved:</p>
+<pre>&amp; "$env:USERPROFILE\.prokon\automation-host\prokon-automation.exe" run my_script.py</pre>
+<p>Scripts are written exactly as described in
+<a href="writing-prokon-python-scripts.html">Writing PROKON-Python scripts</a>, and every
+script in the <a href="../examples/">examples folder</a> runs this way.</p>
+
+<h2 id="own-python">Using your own Python instead of the built-in one</h2>
+<p>By default the host runs scripts with the Python it installed, in the
+<code>python</code> folder inside its install folder. You might prefer your own Python: for
+example, to use extra libraries you have installed there. The host finds Python through an
+environment variable called <strong><code>PROKON_PYTHON</code></strong>, which setup points
+at its own Python.</p>
+
+<h3>The rules</h3>
+<ul>
+  <li><strong>Python 3.12, 3.13, 3.14 or 3.15</strong>, 64-bit. Older versions are refused
+    with a message saying which versions are supported.</li>
+  <li><code>PROKON_PYTHON</code> must name the <strong>folder</strong> that holds
+    <code>python.exe</code>, <strong>not</strong> <code>python.exe</code> itself.</li>
+  <li>You do <strong>not</strong> need to install anything PROKON into your Python. The host
+    supplies <code>prokon.v5</code> to your scripts itself.</li>
+  <li>Your scripts can only use libraries installed in <em>your</em> Python. To run the
+    examples, add the four they use:
+    <pre>"C:\path\to\your\python\python.exe" -m pip install numpy pandas matplotlib openpyxl</pre></li>
+</ul>
+
+<h3>How to switch</h3>
+<ol class="steps">
+  <li>Find your Python's folder. For example, in a terminal:
+    <pre>python -c "import sys, os; print(os.path.dirname(sys.executable))"</pre></li>
+  <li>Set the variable for your user account in PowerShell, using that folder:
+    <pre>[Environment]::SetEnvironmentVariable("PROKON_PYTHON", "C:\path\to\your\python", "User")</pre></li>
+  <li><strong>Restart</strong> your AI tool and any open terminals. Programs that were
+    already running keep the old setting.</li>
+</ol>
+
+<h3>How to switch back</h3>
+<p>Point the variable at the host's own Python again:</p>
+<pre>[Environment]::SetEnvironmentVariable("PROKON_PYTHON", "$env:USERPROFILE\.prokon\automation-host\python", "User")</pre>
+<div class="warn">Re-installing or updating the host also sets <code>PROKON_PYTHON</code>
+back to the built-in Python. After an update, repeat the switch if you want to keep using
+your own.</div>
+
+<h2>Removing it</h2>
+<p>Use <strong>Settings → Apps → Installed apps</strong> and uninstall <em>PROKON
+Automation Host</em>. This also disconnects it from the AI tools that setup connected it to.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installing PROKON for Spyder</title>
+<style>
+  body { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.6; color: #1d2733; background: #f6f7f9; margin: 0; }
+  main { max-width: 52rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; background: #fff; }
+  h1 { color: #0b3d6e; border-bottom: 3px solid #0b3d6e; padding-bottom: .3rem; }
+  h2 { color: #0b3d6e; margin-top: 2.2rem; }
+  code, pre { font-family: Consolas, "Cascadia Mono", monospace; background: #eef1f5; border-radius: 4px; }
+  code { padding: .1rem .3rem; }
+  pre { padding: .8rem 1rem; overflow-x: auto; }
+  .note { border-left: 4px solid #2a7ab8; background: #eef6fc; padding: .6rem 1rem; margin: 1rem 0; }
+  .warn { border-left: 4px solid #c77c00; background: #fff6e6; padding: .6rem 1rem; margin: 1rem 0; }
+  ol.steps > li { margin-bottom: 1rem; }
+  nav.guides { font-size: .9rem; background: #eef1f5; padding: .5rem 1rem; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; } td, th { border: 1px solid #d5dbe3; padding: .4rem .6rem; text-align: left; vertical-align: top; }
+</style>
+</head>
+<body>
+<main>
+<nav class="guides">Guides:
+  <strong>Spyder</strong> ·
+  <a href="installing-prokon-for-vscode.html">VS Code</a> ·
+  <a href="installing-prokon-automation-host.html">Automation host</a> ·
+  <a href="writing-prokon-python-scripts.html">Writing scripts</a>
+</nav>
+
+<h1>Installing PROKON for Spyder</h1>
+
+<p><strong>Choose this if you want something that works straight out of the box.</strong>
+Spyder is a free Python editor for scientists and engineers. It comes with its own Python
+and with the libraries the PROKON examples use (numpy, pandas, matplotlib and openpyxl).
+PROKON for Spyder adds one thing to it: the <code>prokon.v5</code> Python package, which
+runs the PROKON design engines from your scripts.</p>
+
+<h2>What you need</h2>
+<ul>
+  <li>A Windows PC.</li>
+  <li><strong>Spyder 6</strong>, installed for your own user account (instructions below).</li>
+  <li>A PROKON licence for the engines you want to use, through the PROKON License Manager.</li>
+  <li>The installer file <code>Install-Prokon-5-for-Spyder.exe</code>.</li>
+</ul>
+<p>You do <strong>not</strong> need administrator rights, and you do not need to install
+Python separately.</p>
+
+<h2>Step by step</h2>
+<ol class="steps">
+  <li>
+    <strong>Install Spyder 6.</strong> Download the Windows installer from
+    <a href="https://www.spyder-ide.org/">spyder-ide.org</a> and run it.
+    <div class="warn">Install Spyder <strong>for yourself only</strong> (just for your user
+    account), not "for all users". If Spyder is installed for all users, PROKON setup
+    usually cannot write into it, and it will stop and tell you so. The reliable fix is to
+    reinstall Spyder for yourself only.</div>
+  </li>
+  <li>
+    <strong>Close Spyder</strong> if it is open.
+  </li>
+  <li>
+    <strong>Run <code>Install-Prokon-5-for-Spyder.exe</code>.</strong> Setup finds Spyder
+    by itself. The last page before installing shows where it found it:
+    <pre>Spyder found at:
+      C:\Users\&lt;you&gt;\AppData\Local\spyder-6</pre>
+    If you have more than one Spyder installed, that page says so and names the one PROKON
+    will go into.
+  </li>
+  <li>
+    <strong>If PROKON for Spyder is already installed</strong>, setup asks whether to replace
+    it. <em>Yes</em> removes the old copy completely and then installs the new one.
+    <em>No</em> cancels and changes nothing.
+  </li>
+  <li>
+    <strong>Wait for the self-check.</strong> At the end, setup runs every PROKON engine
+    once and compares the answers with the ones recorded when the installer was built. This
+    can take a minute.
+  </li>
+  <li>
+    <strong>Read the finish page.</strong> It tells you which of these happened:
+    <table>
+      <tr><th>The finish page says</th><th>What it means</th></tr>
+      <tr><td>PROKON is installed and every engine was checked.</td><td>You are ready.</td></tr>
+      <tr><td>PROKON was installed successfully. Validation did not complete, because this
+        computer has no PROKON licence…</td><td>The install is fine; the check could not
+        run. Sign in to the PROKON License Manager, then run <strong>Check PROKON
+        engines</strong> from the Start Menu.</td></tr>
+      <tr><td>The check did NOT pass.</td><td>Send the report file named on the page to
+        Prokon support.</td></tr>
+    </table>
+  </li>
+</ol>
+
+<h2>Check that it works</h2>
+<p>Open Spyder and paste this into the editor, then press <strong>F5</strong> to run it:</p>
+<pre>import prokon.v5
+
+answer = prokon.v5.beam_section.analyse(
+    design_code="BS8110 - 1997",
+    m=200, v=100,
+    bw=300, h=500,
+    dc_t=40, dc_b=40, dc_s=40,
+    fcu=30, fy=450, fyv=450,
+)
+
+print(answer["result"]["mu"])</pre>
+<p>It should print <code>295.18197048179997</code> (the section's moment capacity in kNm).</p>
+
+<h2>Run your scripts from inside Spyder</h2>
+<p>Spyder prepares its Python environment before it runs your script. If you start Spyder's
+<code>python.exe</code> directly from an ordinary command prompt instead, that preparation is
+skipped. Simple scripts still work, but scripts that draw charts with matplotlib can exit
+without any error message. Running the same script from inside Spyder works.</p>
+
+<h2>Next steps</h2>
+<ul>
+  <li><a href="writing-prokon-python-scripts.html">Writing PROKON-Python scripts</a>: how
+    the calls work, and a tour of the examples.</li>
+  <li>Open any script in the <a href="../examples/">examples folder</a> in Spyder and press
+    F5. Start with <code>examples/quickstarts/</code>.</li>
+</ul>
+
+<h2>Removing it</h2>
+<p>Use <strong>Settings → Apps → Installed apps</strong> and uninstall <em>PROKON 5 for
+Spyder</em>. Spyder itself is left alone.</p>
+</main>
+</body>
+</html>

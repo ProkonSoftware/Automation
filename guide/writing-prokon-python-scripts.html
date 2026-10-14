@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing PROKON-Python scripts</title>
+<style>
+  body { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.6; color: #1d2733; background: #f6f7f9; margin: 0; }
+  main { max-width: 52rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; background: #fff; }
+  h1 { color: #0b3d6e; border-bottom: 3px solid #0b3d6e; padding-bottom: .3rem; }
+  h2 { color: #0b3d6e; margin-top: 2.2rem; }
+  h3 { color: #234e78; }
+  code, pre { font-family: Consolas, "Cascadia Mono", monospace; background: #eef1f5; border-radius: 4px; }
+  code { padding: .1rem .3rem; }
+  pre { padding: .8rem 1rem; overflow-x: auto; }
+  .note { border-left: 4px solid #2a7ab8; background: #eef6fc; padding: .6rem 1rem; margin: 1rem 0; }
+  .warn { border-left: 4px solid #c77c00; background: #fff6e6; padding: .6rem 1rem; margin: 1rem 0; }
+  nav.guides { font-size: .9rem; background: #eef1f5; padding: .5rem 1rem; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; } td, th { border: 1px solid #d5dbe3; padding: .4rem .6rem; text-align: left; vertical-align: top; }
+</style>
+</head>
+<body>
+<main>
+<nav class="guides">Guides:
+  <a href="installing-prokon-for-spyder.html">Spyder</a> ·
+  <a href="installing-prokon-for-vscode.html">VS Code</a> ·
+  <a href="installing-prokon-automation-host.html">Automation host</a> ·
+  <strong>Writing scripts</strong>
+</nav>
+
+<h1>Writing PROKON-Python scripts</h1>
+
+<p>This guide explains the few ideas every PROKON script uses. The real teaching material
+is the <a href="../examples/">examples folder</a>: more than 150 working scripts covering
+every engine. Read this page once, then learn from the examples.</p>
+
+<p>Scripts work the same way in Spyder, in VS Code and in the Automation Host. Install one
+of them first (see the guides above).</p>
+
+<h2>1. One call per design</h2>
+<pre>import prokon.v5
+
+answer = prokon.v5.beam_section.analyse(
+    design_code="BS8110 - 1997",
+    m=200, v=100,              # moment (kNm) and shear (kN)
+    bw=300, h=500,             # width and depth (mm)
+    dc_t=40, dc_b=40, dc_s=40, # covers to the bar centres (mm)
+    fcu=30, fy=450, fyv=450,   # material strengths (MPa)
+)
+
+result = answer["result"]
+print(result["mu"])            # moment capacity: 295.18197048179997</pre>
+
+<p>That is the whole pattern: <strong><code>prokon.v5.&lt;engine&gt;.analyse(...)</code>
+with named inputs.</strong> Each call runs the same engine as the PROKON desktop program,
+so the numbers are the desktop's numbers.</p>
+
+<h3>The engines</h3>
+<table>
+  <tr><th>Python name</th><th>PROKON program</th></tr>
+  <tr><td><code>continuous_beam</code></td><td>C01 Continuous Beam</td></tr>
+  <tr><td><code>prestressed_concrete</code></td><td>C02 Captain (prestressed concrete)</td></tr>
+  <tr><td><code>rectangular_slab</code></td><td>C04 Rectangular Slab</td></tr>
+  <tr><td><code>rectangular_column</code></td><td>C11 Rectangular Column</td></tr>
+  <tr><td><code>circular_column</code></td><td>C12 Circular Column</td></tr>
+  <tr><td><code>general_column</code></td><td>C13 General Column</td></tr>
+  <tr><td><code>retaining_wall</code></td><td>C14 Retaining Wall</td></tr>
+  <tr><td><code>pad_footing</code></td><td>C15 Pad Footing</td></tr>
+  <tr><td><code>pile_cap</code></td><td>C16 Pile Cap</td></tr>
+  <tr><td><code>crack_widths</code></td><td>C21 Crack Widths</td></tr>
+  <tr><td><code>beam_section</code></td><td>C22 Beam Section</td></tr>
+  <tr><td><code>punching_shear</code></td><td>C23 Punching Shear</td></tr>
+</table>
+
+<h2>2. What comes back</h2>
+<p><code>analyse()</code> returns a Python dictionary describing the whole run. The parts
+you will use:</p>
+<table>
+  <tr><th>Key</th><th>What it holds</th></tr>
+  <tr><td><code>answer["result"]</code></td><td>The engineering results, as a dictionary
+    (for example <code>"mu"</code>, <code>"ast"</code>). Numbers are at full precision, not
+    rounded as on a calcsheet. Format them yourself when printing:
+    <code>f"{result['mu']:.1f}"</code>.</td></tr>
+  <tr><td><code>answer["ok"]</code></td><td><code>True</code> when the engine produced an
+    answer.</td></tr>
+  <tr><td><code>answer["warnings"]</code></td><td>A list of messages from the engine:
+    "this answered, but read this before you use it".</td></tr>
+</table>
+
+<div class="note"><strong>A design that fails its checks is still an answer.</strong> If the
+section is inadequate, <code>ok</code> is still <code>True</code> and the results tell you
+what failed. Only "no answer could be produced at all" counts as an error.</div>
+
+<h2>3. Finding the right input names</h2>
+<p>Inputs use the short engineering names from the desktop programs (<code>fcu</code>,
+<code>bw</code>, <code>dc_t</code>). Everything is metric: mm, MPa, kN, kNm. Three ways to
+look them up:</p>
+<ul>
+  <li><strong>Ask Python:</strong> <code>help(prokon.v5.beam_section.analyse)</code> lists
+    every input, which ones are required, and what each means.</li>
+  <li><strong>Allowed text values</strong> are listed on the engine module, for example
+    <code>prokon.v5.beam_section.DESIGN_CODE_VALUES</code>.</li>
+  <li><strong>Copy a quickstart.</strong> Each engine has one in
+    <code>examples/quickstarts/</code>, with every input commented.</li>
+</ul>
+<p>Text values must match exactly, including capitals and spaces:
+<code>"BS8110 - 1997"</code>, not <code>"bs8110 - 1997"</code>. Optional inputs you leave
+out get the engine's own default. A required input you leave out stops the call with a
+normal Python <code>TypeError</code> naming it.</p>
+
+<h2>4. When something goes wrong</h2>
+<p>When the engine refuses a request, the call raises <code>prokon.v5.ProkonError</code>,
+which says what happened and often how to fix it:</p>
+<pre>try:
+    answer = prokon.v5.beam_section.analyse(design_code="bs8110 - 1997", ...)
+except prokon.v5.ProkonError as e:
+    print(e.category)   # "invalid_input"
+    print(e.message)    # "bs8110 - 1997" is not one of the values "design_code" accepts.
+    print(e.hints)      # the full list of allowed design codes</pre>
+<p>Two categories are worth telling apart:</p>
+<ul>
+  <li><strong><code>invalid_input</code></strong>: the request itself is wrong (a typo, a
+    value out of range). Fix the script.</li>
+  <li><strong><code>no_solution</code></strong>: the request was fine, but no answer exists
+    for it. In a search loop this is a normal result to skip past, not a bug.</li>
+</ul>
+<p>Each call is allowed 120 seconds by default. Change it with
+<code>prokon.v5.timeout_seconds = 300</code>. The
+<code>examples/going-deeper/</code> folder shows full error handling for every engine.</p>
+
+<h2>5. The real power: loops, tables and charts</h2>
+<p>A script is ordinary Python, so you can do what the desktop program alone cannot: run a
+hundred variations, put the results in a table, and plot them.</p>
+<pre>import pandas as pd
+import prokon.v5
+
+rows = []
+for h in [400, 450, 500, 550, 600]:
+    answer = prokon.v5.beam_section.analyse(
+        design_code="BS8110 - 1997",
+        m=200, v=100, bw=300, h=h,
+        dc_t=40, dc_b=40, dc_s=40,
+        fcu=30, fy=450, fyv=450,
+    )
+    result = answer["result"]
+    rows.append({"h (mm)": h, "Mu (kNm)": result["mu"], "As (mm2)": result["ast"]})
+
+table = pd.DataFrame(rows)
+print(table.round(1))</pre>
+<pre>   h (mm)  Mu (kNm)  As (mm2)
+0     400     180.8    1809.4
+1     450     234.5    1523.5
+2     500     295.2    1287.3
+3     550     362.8    1123.2
+4     600     437.5    1000.1</pre>
+<p>You can also pass one engine's result straight into the next: a beam's support
+reactions become a column's loads, which become a footing's loads. The
+<code>examples/workflows/</code> folder does exactly this.</p>
+
+<h2>6. Working with desktop files</h2>
+<p>Each engine can also read and write the desktop program's own data files:</p>
+<ul>
+  <li><code>load_file(path=...)</code> reads a desktop file. Its
+    <code>["result"]["inputs"]</code> can go straight back into <code>analyse()</code>.</li>
+  <li><code>save_file(..., path=...)</code> takes the same inputs as <code>analyse()</code>
+    and writes a file you can open in the desktop program.</li>
+</ul>
+<pre>loaded = prokon.v5.beam_section.load_file(path="RectangularBeamExample-W5.3.05.C22")
+inputs = loaded["result"]["inputs"]
+result = prokon.v5.beam_section.analyse(**inputs)["result"]</pre>
+<p>The <code>examples/built-in-desktop-examples/</code> folder runs every desktop
+Examples-menu file this way and compares each result with the desktop's own calcsheet.</p>
+
+<h2>7. A tour of the examples</h2>
+<p>Every script runs as it is and prints its results. Each opens with a header saying what
+it shows and how its numbers were checked. The examples use only Python's standard library
+plus numpy, pandas, matplotlib and openpyxl.</p>
+<table>
+  <tr><th>Folder</th><th>Scripts</th><th>What you will find</th></tr>
+  <tr><td><code>quickstarts/</code></td><td>12</td><td><strong>Start here.</strong> One short,
+    fully commented script per engine.</td></tr>
+  <tr><td><code>recipes/</code></td><td>36</td><td>Everyday tasks: finding the most economical
+    design, batch runs from a table, bar schedules, calculation sheets, CSV and Excel output.</td></tr>
+  <tr><td><code>workflows/</code></td><td>12</td><td>Complete multi-engine jobs, such as a
+    flat-slab bay from slab to column to footing, each engine fed by the last.</td></tr>
+  <tr><td><code>design-studies/</code></td><td>12</td><td>Deeper studies: design charts,
+    interaction envelopes, slenderness, comparing remedies.</td></tr>
+  <tr><td><code>charts-and-plotting/</code></td><td>12</td><td>One matplotlib figure per engine,
+    drawn from real analyses. Each saves a PNG.</td></tr>
+  <tr><td><code>design-code-comparisons/</code></td><td>12</td><td>The same element designed to
+    SABS/SANS and to Eurocode, side by side.</td></tr>
+  <tr><td><code>carbon-and-cost/</code></td><td>12</td><td>The embodied carbon of design
+    choices: which option is lowest-carbon, and why.</td></tr>
+  <tr><td><code>checking/</code></td><td>6</td><td>Independent checks of someone else's design:
+    the reinforcement is an input.</td></tr>
+  <tr><td><code>going-deeper/</code></td><td>17</td><td>Error handling, warnings, units and
+    sign conventions, limits, and batches that keep going when one case fails.</td></tr>
+  <tr><td><code>built-in-desktop-examples/</code></td><td>39</td><td>The desktop programs'
+    own example files, run from Python and compared with the desktop calcsheets.</td></tr>
+  <tr><td><code>cb-reinforcement-study/</code></td><td>2</td><td>A continuous-beam study
+    driven from desktop files.</td></tr>
+</table>
+<p><code>examples/_tools/</code> holds the scripts used to verify the examples themselves.
+You do not need them to learn.</p>
+
+<div class="warn"><strong>Engine versus desktop.</strong> Where a script finds that an
+engine's result differs from the desktop program's, the script says so in its output. Read
+those notes before relying on that result.</div>
+</main>
+</body>
+</html>
