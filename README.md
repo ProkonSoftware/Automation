@@ -29,26 +29,23 @@ There are three ways in. Each has its own installer and its own step-by-step gui
 
 **PROKON for Spyder** — *the easiest start.* Installs a ready-to-use Python editor with
 PROKON already inside it. Nothing else to set up.
-→ [Installing PROKON for Spyder](guide/installing-prokon-for-spyder.html)
+→ [Installing PROKON for Spyder](https://prokonsoftware.github.io/Automation/guide/installing-prokon-for-spyder.html)
 
 **PROKON for VS Code** — *for people who already use Python.* Adds PROKON to a Python you
 installed yourself, and you write scripts in VS Code.
-→ [Installing PROKON for VS Code](guide/installing-prokon-for-vscode.html)
+→ [Installing PROKON for VS Code](https://prokonsoftware.github.io/Automation/guide/installing-prokon-for-vscode.html)
 
 **PROKON Automation Host** — *to let an AI assistant do the design work.* Connects PROKON to
 an AI tool such as Claude Code or OpenCode, so you can ask for a design in plain English.
-→ [Installing the PROKON Automation Host](guide/installing-prokon-automation-host.html)
+→ [Installing the PROKON Automation Host](https://prokonsoftware.github.io/Automation/guide/installing-prokon-automation-host.html)
 
 Whichever you choose, you need a Windows PC and a PROKON licence for the programs you want to
 use, signed in through the PROKON License Manager.
 
 ## 2. Learn the basics
 
-[Writing PROKON-Python scripts](guide/writing-prokon-python-scripts.html) covers the handful
+[Writing PROKON-Python scripts](https://prokonsoftware.github.io/Automation/guide/writing-prokon-python-scripts.html) covers the handful
 of ideas every script relies on, and walks through the examples.
-
-The guides are web pages. Download this repository and open them in your browser from the
-downloaded copy — that way the links between the guides, and into the examples, all work.
 
 ## 3. Run an example
 
