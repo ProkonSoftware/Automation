@@ -61,7 +61,8 @@ CATEGORIES = (
     "charts-and-plotting",
     "carbon-and-cost",
     "cb-reinforcement-study",
-    "built-in-desktop-examples"
+    "built-in-desktop-examples",
+    "stress-test"
 )
 
 

@@ -694,7 +694,7 @@ the single binary, and the pinned values reproduce unchanged.
      own headers. Do not hand-edit this block: run the tool.
      The prose outside it is hand-written and never touched. -->
 
-**172 example scripts.** Every row below is read out of that script's
+**173 example scripts.** Every row below is read out of that script's
 own header, so the ledger cannot disagree with the file.
 
 | Script | Example | Feature | Verified | Date | Checked against |
@@ -859,6 +859,7 @@ own header, so the ledger cannot disagree with the file.
 | `recipes/retaining_wall_base_stability.py` | Retaining wall — grow the base until the wall stands up | retaining_wall (C14 Retaining Wall) | **yes** | 2026-09-02 | the d = 2.50 m row matches the C14 desktop-parity calcsheet; exact on prokon-automation.exe |
 | `recipes/retaining_wall_batch_to_excel.py` | Retaining wall — a schedule of walls to Excel | retaining_wall (C14 Retaining Wall) | **yes** | 2026-09-02 | the W1 row matches the C14 desktop-parity calcsheet; exact on prokon-automation.exe |
 | `recipes/retaining_wall_stability_sheet.py` | A wall stability sheet, with the section drawn to scale | retaining_wall (C14 Retaining Wall) | **yes** | 2026-09-18 | the parity wall reproduces its pinned stability values; the sheet and the drawing are written and re-read; re-pinned 2026-09-18 after C14 DevOps 10408 (seismic active pressure below the water table); the fixed engine is desktop-verified by C14 refdata ff33d43 - seven calcsheet exports taken 2026-09-17 from a Wall.exe rebuilt with the fix, read out of machine-readable JSON - but these values were NOT re-taken from a desktop run of THIS example |
+| `stress-test/all_engines_stress_test.py` | Every engine under stress - one script that pushes all twelve to their limits | beam_section + circular_column + continuous_beam + crack_widths + general_column + pad_footing + pile_cap + prestressed_concrete + punching_shear + rectangular_column + rectangular_slab + retaining_wall (C22 + C12 + C01 + C21 + C13 + C15 + C16 + C02 + C23 + C11 + C04 + C14) | **yes** | 2026-11-20 | anchor mu exact (==); Spyder (CPython 3.12) and VS Code (CPython 3.15) byte-identical, and prokon-automation run identical except the 'unknown input name' rows |
 | `workflows/basement_wall_propped_by_slab.py` | Basement wall propped by the ground-floor slab | retaining_wall + rectangular_slab + continuous_beam + punching_shear (C14 Retaining Wall + C04 Rectangular Slab + C01 Continuous Beam + C23 Punching Shear) | **yes** | 2026-09-10 | every number measured on prokon-automation.exe across C14, C04, C01 and C23 |
 | `workflows/bridge_pier_and_foundation.py` | Bridge pier - circular column, then piles against a spread base | circular_column + pile_cap + crack_widths + pad_footing (C12 Circular Column + C16 Pile Cap + C21 Crack Widths + C15 Pad Footing) | **yes** | 2026-09-02 | every number measured on prokon-automation.exe; both foundations take the same pier load |
 | `workflows/buried_reservoir_structure.py` | A buried reservoir - perimeter wall, pilaster, centre column, PT roof | retaining_wall + general_column + circular_column + prestressed_concrete (C14 Retaining Wall + C13 General Column + C12 Circular Column + C02 Captain) | **yes** | 2026-09-02 | every number measured on prokon-automation.exe; each element takes the one above it |
@@ -878,22 +879,22 @@ One row per engine, one column per category. The point of the
 table is the TOTAL column: no engine is better documented
 than another.
 
-| Engine | quickstarts | going-deeper | recipes | workflows | design-studies | design-code-comparisons | checking | charts-and-plotting | carbon-and-cost | cb-reinforcement-study | built-in-desktop-examples | total |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| `beam_section` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 2 | **17** |
-| `circular_column` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 5 | **20** |
-| `continuous_beam` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 2 | 2 | **19** |
-| `crack_widths` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 2 | **17** |
-| `general_column` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 2 | **17** |
-| `pad_footing` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | **18** |
-| `pile_cap` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | **18** |
-| `prestressed_concrete` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | **18** |
-| `punching_shear` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 5 | **20** |
-| `rectangular_column` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 5 | **20** |
-| `rectangular_slab` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | **18** |
-| `retaining_wall` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 4 | **19** |
-| **engine appearances** | 12 | 24 | 36 | 48 | 12 | 12 | 12 | 12 | 12 | 2 | 39 | **221** |
+| Engine | quickstarts | going-deeper | recipes | workflows | design-studies | design-code-comparisons | checking | charts-and-plotting | carbon-and-cost | cb-reinforcement-study | built-in-desktop-examples | stress-test | total |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `beam_section` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 2 | 1 | **18** |
+| `circular_column` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 5 | 1 | **21** |
+| `continuous_beam` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 2 | 2 | 1 | **20** |
+| `crack_widths` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 2 | 1 | **18** |
+| `general_column` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 2 | 1 | **18** |
+| `pad_footing` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | 1 | **19** |
+| `pile_cap` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | 1 | **19** |
+| `prestressed_concrete` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | 1 | **19** |
+| `punching_shear` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 5 | 1 | **21** |
+| `rectangular_column` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 5 | 1 | **21** |
+| `rectangular_slab` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 3 | 1 | **19** |
+| `retaining_wall` | 1 | 2 | 3 | 4 | 1 | 1 | 1 | 1 | 1 | 0 | 4 | 1 | **20** |
+| **engine appearances** | 12 | 24 | 36 | 48 | 12 | 12 | 12 | 12 | 12 | 2 | 39 | 12 | **233** |
 
-Minimum 17, maximum 20, spread 3.
+Minimum 18, maximum 21, spread 3.
 
 <!-- END GENERATED LEDGER -->

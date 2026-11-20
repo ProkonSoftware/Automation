@@ -49,7 +49,7 @@ of ideas every script relies on, and walks through the examples.
 
 ## 3. Run an example
 
-The [`examples/`](examples/) folder holds 172 ready-to-run scripts. Open one, run it, and read
+The [`examples/`](examples/) folder holds 173 ready-to-run scripts. Open one, run it, and read
 what it prints. Every script starts with a short note describing what it does and how its
 results were checked.
 
@@ -68,6 +68,7 @@ PROKON program. After that, browse by what you want to do:
 | Handle errors, warnings, units and large batches properly | [`going-deeper/`](examples/going-deeper/) |
 | Run the desktop programs' own example files and compare with their calcsheets | [`built-in-desktop-examples/`](examples/built-in-desktop-examples/) |
 | Study continuous-beam reinforcement from desktop save files | [`cb-reinforcement-study/`](examples/cb-reinforcement-study/) |
+| Put every program through a stress test, and compare the output between Spyder, VS Code and the Automation Host | [`stress-test/`](examples/stress-test/) |
 
 Besides PROKON, the examples use only numpy, pandas, matplotlib, openpyxl and Python's
 standard library.
